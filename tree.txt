@@ -1,0 +1,120 @@
+Folder PATH listing for volume New Volume
+Volume serial number is 5EAC-2770
+D:.
+¦   Procfile
+¦   README.md
+¦   requirements.txt
+¦   tree.txt
+¦   
++---anh_thong_ke
+¦       academic_pressure.png
+¦       age.png
+¦       CGPA.png
+¦       City.png
+¦       co tu tu khong.png
+¦       degree.png
+¦       Dietary habits.png
+¦       Family.png
+¦       Financial stress.png
+¦       Gender.png
+¦       Job satisfaction.png
+¦       Ma_tran_mat_mat_LightGBM.png
+¦       Ma_tran_mat_mat_Neural Network.png
+¦       Ma_tran_mat_mat_RandomForest.png
+¦       ma_tran_tuong_quan.png
+¦       ma_tran_tuong_quan_moi.png
+¦       Profession.png
+¦       ROC.png
+¦       sleep duration.png
+¦       Study satisfaction.png
+¦       work study hour.png
+¦       Work_pressure.png
+¦       
++---app
+¦   ¦   app_gui.py
+¦   ¦   
+¦   +---assets
+¦   ¦   +---backgrounds
+¦   ¦           bg1.jpg
+¦   ¦           bg2.jpeg
+¦   ¦           bg3.jpg
+¦   ¦           tree_cloud_fog_forest_overcast-155195.jpg!s2
+¦   ¦           
+¦   +---web
+¦       ¦   app.py
+¦       ¦   
+¦       +---static
+¦       ¦   ¦   script.js
+¦       ¦   ¦   style.css
+¦       ¦   ¦   
+¦       ¦   +---img
+¦       ¦           hehehe.jpeg
+¦       ¦           starry-night.jpg
+¦       ¦           
+¦       +---templates
+¦               index.html
+¦               
++---data
+¦   +---interim
+¦   +---predict
+¦   ¦       du_doan1.csv
+¦   ¦       heheh.csv
+¦   ¦       
+¦   +---processed
+¦   ¦       processed.csv
+¦   ¦       X_test.csv
+¦   ¦       X_test_mod.csv
+¦   ¦       X_train.csv
+¦   ¦       X_train_mod.csv
+¦   ¦       y_test.csv
+¦   ¦       y_test_mod.csv
+¦   ¦       y_train.csv
+¦   ¦       y_train_mod.csv
+¦   ¦       
+¦   +---raw
+¦           Student Depression Dataset.csv
+¦           
++---models
+¦       encoder.pkl
+¦       feature_order.pkl
+¦       feature_order_lightgbm.pkl
+¦       label_encoders.pkl
+¦       lgbm_model.pkl
+¦       nn_model.pkl
+¦       rf_model.pkl
+¦       
++---New folder
++---notebooks
+¦       00_overview.ipynb
+¦       01_data_cleaning.ipynb
+¦       02_feature_engineering.ipynb
+¦       03_model_training.ipynb
+¦       04_evaluation.ipynb
+¦       
++---reports
+¦   ¦   comparison_table.md
+¦   ¦   
+¦   +---figures
+¦           roc_curve.md
+¦           
++---scripts
+¦       predict_csv.py
+¦       train_model.py
+¦       
++---utils
+    ¦   advice_engine.py
+    ¦   file_predictor.py
+    ¦   localization.py
+    ¦   mapping_degree.py
+    ¦   mapping_VN_IN.py
+    ¦   model_helpers.py
+    ¦   preprocessing.py
+    ¦   
+    +---__pycache__
+            advice_engine.cpython-311.pyc
+            file_predictor.cpython-311.pyc
+            localization.cpython-311.pyc
+            mapping_degree.cpython-311.pyc
+            mapping_VN_IN.cpython-311.pyc
+            preprocessing.cpython-311.pyc
+            
