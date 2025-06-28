@@ -30,8 +30,8 @@
                 
                 <div class="tab-pane fade show active p-4" id="predict-pane" role="tabpanel">
                     <form id="predict-form">
-                        <div class="row g-4">
-                             {% for field in ['age', 'city', 'degree', 'sleep_duration', 'dietary_habits', 'work/study_hours', 'academic_pressure', 'study_satisfaction', 'financial_stress', 'cgpa'] %}
+                         <div class="row g-4">
+                            {% for field in ['age', 'city', 'degree', 'sleep_duration', 'dietary_habits', 'work/study_hours', 'academic_pressure', 'study_satisfaction', 'financial_stress', 'cgpa'] %}
                              <div class="col-md-6">
                                 <label for="{{ field }}" class="form-label">{{ field_labels.get(field, field) }}</label>
                                 {% if field in form_options %}
@@ -87,17 +87,14 @@
                     <form class="index-form" data-category="{{ category }}">
                         <h4 class="mb-2">{{ data.title }}</h4>
                         <p class="text-secondary">{{ data.description }}</p>
+                        
                         {% for question in data.questions %}
                             {% set question_index = loop.index %}
                             <div class="question-block my-4">
-                                <label class="form-label fw-medium">{{ question_index }}. {{ question }}</label>
-                                <div class="radio-group">
-                                    {% for value, text in data.options %}
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="radio" name="{{ category }}_q{{ question_index }}" id="{{ category }}_q{{ question_index }}_opt{{ value }}" value="{{ value }}" required>
-                                        <label class="form-check-label" for="{{ category }}_q{{ question_index }}_opt{{ value }}">{{ text }}</label>
-                                    </div>
-                                    {% endfor %}
+                                <label for="{{ category }}_q{{ question_index }}" class="form-label fw-medium">{{ question_index }}. {{ question }}</label>
+                                <div class="slider-group d-flex align-items-center">
+                                    <input type="range" class="form-range slider-input" min="1" max="100" value="50" id="{{ category }}_q{{ question_index }}" name="{{ category }}_q{{ question_index }}">
+                                    <span class="slider-value ms-3 fw-bold">50</span>
                                 </div>
                             </div>
                         {% endfor %}
@@ -114,7 +111,6 @@
             <div id="result-content"></div>
         </div>
     </div>
-
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="{{ url_for('static', filename='script.js') }}"></script>
 </body>

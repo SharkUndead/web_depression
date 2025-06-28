@@ -1,0 +1,69 @@
+/* ---- GOOGLE FONTS ---- */
+@import url('https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap');
+
+/* ---- BIẾN MÀU ---- */
+:root {
+    --primary-color: #00796b; 
+    --background-color: #f4f7f9;
+    --surface-color: #ffffff;
+    --text-color: #212529;
+    --text-secondary-color: #6c757d;
+    --border-color: #e2e8f0;
+}
+
+/* ---- THIẾT LẬP NỀN BẰNG HÌNH ẢNH ---- */
+body {
+    font-family: 'Be Vietnam Pro', sans-serif;
+    color: var(--text-color);
+    line-height: 1.6;
+
+    /* --- SỬA LẠI ĐƯỜNG DẪN ẢNH NỀN Ở ĐÂY --- */
+    background-image: url('/static/img/back_ground.jpg'); 
+    background-size: cover;
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-color: var(--background-color); /* Màu nền dự phòng nếu ảnh không tải được */
+}
+
+/* ---- KHUNG CHỨA CHÍNH ---- */
+.container {
+    max-width: 900px;
+    padding-top: 3rem;
+    padding-bottom: 3rem;
+}
+
+/* KHÔI PHỤC HIỆU ỨNG KÍNH MỜ */
+.main-content-wrapper {
+    background-color: rgba(255, 255, 255, 0.95); /* Nền trắng trong suốt 95% */
+    border-radius: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    -webkit-backdrop-filter: blur(5px);
+    backdrop-filter: blur(5px);
+}
+
+/* (Các phần CSS còn lại không thay đổi) */
+h2 { font-size: 1.75rem; font-weight: 700; color: #343a40; }
+.lead { font-size: 1rem; font-weight: 400; color: var(--text-secondary-color); }
+.nav-tabs { display: flex; flex-wrap: nowrap; overflow-x: auto; padding-bottom: 2px; border-bottom: 2px solid var(--border-color); scrollbar-width: thin; scrollbar-color: #ccc transparent; }
+.nav-tabs::-webkit-scrollbar { height: 4px; }
+.nav-tabs::-webkit-scrollbar-thumb { background: #ccc; border-radius: 10px; }
+.nav-tabs .nav-item { flex-shrink: 0; }
+.nav-tabs .nav-link { border: none; border-bottom: 3px solid transparent; color: var(--text-secondary-color); font-weight: 600; transition: all 0.2s ease-in-out; margin-right: 10px; white-space: nowrap; padding: 0.75rem 1.25rem; }
+.nav-tabs .nav-link.active, .nav-tabs .nav-item.show .nav-link { color: var(--primary-color); border-bottom-color: var(--primary-color); background-color: transparent; }
+.nav-tabs .nav-link:hover:not(.active) { color: var(--primary-color); background-color: #e9ecef; }
+.tab-content { padding: 2rem; }
+.form-label { font-size: 0.9rem; font-weight: 600; color: #495057; }
+.form-control, .form-select { border-radius: 8px; padding: 0.6rem 1rem; font-size: 0.95rem; background-color: #f8f9fa; border: 1px solid #ced4da; }
+.form-control:focus, .form-select:focus { border-color: var(--primary-color); box-shadow: 0 0 0 3px rgba(0, 150, 136, 0.15); background-color: #fff; }
+.form-control::placeholder { color: #999; opacity: 1; }
+.form-select option { background: #ffffff; color: #212529; }
+.radio-group { display: flex; flex-wrap: wrap; gap: 0.8rem; margin-top: 0.75rem; }
+.radio-group .form-check-input { display: none; }
+.radio-group .form-check-label { padding: 0.6rem 1.25rem; border-radius: 30px; cursor: pointer; transition: all 0.3s ease; border: 1px solid var(--border-color); color: var(--text-secondary-color); }
+.radio-group .form-check-label:hover { background-color: #e9ecef; border-color: #adb5bd; color: #343a40; }
+.radio-group .form-check-input:checked + .form-check-label { background-color: var(--primary-color); color: #ffffff; border-color: var(--primary-color); }
+.btn-primary { background-color: var(--primary-color); border-color: var(--primary-color); }
+.btn-primary:hover { background-color: #00796b; border-color: #00695c; }
