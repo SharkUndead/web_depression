@@ -12,7 +12,7 @@ project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, project_root)
 
 from utils.preprocessing import preprocess_user_data
-from utils.advice_engine import generate_advice_from_features
+from utils.advice_engine import generate_support_resources
 from utils.localization import FIELD_LABELS, GENDER_OPTIONS, YES_NO_OPTIONS
 # =======================================================
 
@@ -76,7 +76,29 @@ INDEX_QUESTIONS = {
         ]
     }
 }
-
+INDEX_INTERPRETATIONS = {
+    "pressure": {
+        1: "Mức độ áp lực của bạn là không đáng kể. Đây là một dấu hiệu rất tích cực.",
+        2: "Bạn có một mức độ áp lực thấp và có vẻ đang quản lý tốt việc học.",
+        3: "Bạn đang ở mức áp lực trung bình, phản ánh những thăng trầm thường thấy trong cuộc sống sinh viên.",
+        4: "Mức độ áp lực này là khá cao. Bạn nên chú ý hơn đến việc cân bằng và thư giãn.",
+        5: "Đây là mức độ áp lực rất cao. Việc tìm kiếm các phương pháp giảm căng thẳng là rất cần thiết ngay lúc này."
+    },
+    "satisfaction": {
+        1: "Bạn đang cảm thấy rất không hài lòng. Đây là một tín hiệu quan trọng để xem xét lại các yếu tố trong việc học.",
+        2: "Mức độ hài lòng của bạn đang ở mức thấp. Hãy thử tìm kiếm những điều mới mẻ hoặc sự hỗ trợ từ bạn bè, giảng viên.",
+        3: "Bạn cảm thấy bình thường với việc học, không quá hứng thú nhưng cũng không quá chán nản.",
+        4: "Bạn đang có một trải nghiệm học tập khá tích cực và hài lòng. Hãy tiếp tục phát huy nhé!",
+        5: "Tuyệt vời! Bạn đang rất hài lòng và tìm thấy nhiều ý nghĩa trong việc học của mình."
+    },
+    "financial_pressure": {
+        1: "Tình hình tài chính của bạn có vẻ rất ổn định và không gây ra lo lắng.",
+        2: "Bạn có một chút áp lực nhỏ về tài chính nhưng vẫn đang kiểm soát tốt.",
+        3: "Áp lực tài chính của bạn ở mức trung bình. Đây là tình trạng phổ biến của nhiều sinh viên.",
+        4: "Bạn đang cảm thấy áp lực đáng kể về tài chính. Việc lập kế hoạch chi tiêu có thể sẽ hữu ích.",
+        5: "Áp lực tài chính của bạn đang ở mức rất cao và có thể ảnh hưởng đến các khía cạnh khác của cuộc sống."
+    }
+}
 def convert_score_by_thresholds(raw_score):
     if 5 <= raw_score <= 100: return 1
     elif 101 <= raw_score <= 200: return 2
@@ -102,7 +124,7 @@ def predict():
         df_raw = pd.DataFrame([user_input])
         df_processed = preprocess_user_data(df_raw.copy(), label_encoders)
         if df_processed.empty: return jsonify({'error': 'Dữ liệu không hợp lệ.'})
-        advice = generate_advice_from_features(df_processed.iloc[0])
+        advice = generate_support_resources(df_processed.iloc[0])
         df_final = df_processed[feature_order]
         prediction = model.predict(df_final)[0]
         result = {'prediction': int(prediction), 'advice': advice}
@@ -117,7 +139,8 @@ def calculate_index():
         if not category: return jsonify({'error': 'Không rõ loại chỉ số cần tính.'}), 400
         raw_score = sum(int(v) for k, v in data.items() if k.startswith(category))
         final_score = convert_score_by_thresholds(raw_score)
-        result = { 'index_name': INDEX_QUESTIONS[category]['title'], 'score': final_score }
+        interpretation_text = INDEX_INTERPRETATIONS.get(category, {}).get(final_score, "Không có diễn giải.")
+        result = { 'index_name': INDEX_QUESTIONS[category]['title'], 'score': final_score,'interpretation': interpretation_text }
         return jsonify(result)
     except Exception as e: return jsonify({'error': str(e)}), 400
 

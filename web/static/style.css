@@ -3,7 +3,7 @@
 
 /* ---- BIẾN MÀU ---- */
 :root {
-    --primary-color: #00796b; 
+    --primary-color: #66acc3; 
     --background-color: #f4f7f9;
     --surface-color: #ffffff;
     --text-color: #212529;
@@ -45,8 +45,8 @@ body {
 }
 
 /* (Các phần CSS còn lại không thay đổi) */
-h2 { font-size: 1.75rem; font-weight: 700; color: #343a40; }
-.lead { font-size: 1rem; font-weight: 400; color: var(--text-secondary-color); }
+h2 { font-size: 4rem; font-weight: 600; color: #ceac33; display: inline-block; border-radius: 4px; padding: 15px 30px; font-family: "Alex Brush", cursive; font-style: normal;text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7);}
+.lead { font-size: 1.8rem; font-weight: 400; color: var(--text-secondary-color); }
 .nav-tabs { display: flex; flex-wrap: nowrap; overflow-x: auto; padding-bottom: 2px; border-bottom: 2px solid var(--border-color); scrollbar-width: thin; scrollbar-color: #ccc transparent; }
 .nav-tabs::-webkit-scrollbar { height: 4px; }
 .nav-tabs::-webkit-scrollbar-thumb { background: #ccc; border-radius: 10px; }
@@ -66,4 +66,5 @@ h2 { font-size: 1.75rem; font-weight: 700; color: #343a40; }
 .radio-group .form-check-label:hover { background-color: #e9ecef; border-color: #adb5bd; color: #343a40; }
 .radio-group .form-check-input:checked + .form-check-label { background-color: var(--primary-color); color: #ffffff; border-color: var(--primary-color); }
 .btn-primary { background-color: var(--primary-color); border-color: var(--primary-color); }
-.btn-primary:hover { background-color: #00796b; border-color: #00695c; }
+.btn-primary:hover { background-color: #a6d7e8; border-color: #d6faf5; }
+.title-second{color: #ffffff;font-weight: 580; font-size: 1.9rem; margin-top: 10px; text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7);font-family: "Alex Brush", cursive; font-style: normal;}

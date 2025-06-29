@@ -6,16 +6,13 @@ document.addEventListener('DOMContentLoaded', function() {
     const resultBox = document.getElementById('result-box');
     const resultTitle = document.getElementById('result-title');
     const resultContent = document.getElementById('result-content');
-
-    // <<<<<<<<<<<<<<<< THAY ĐỔI LOGIC MỚI Ở ĐÂY >>>>>>>>>>>>>>>>
-
-    // 1. Tạo một đối tượng để lưu trữ kết quả cho từng tab
-    const tabResults = {};
-
-    // 2. Lấy tất cả các nút bấm chuyển tab
+    
     const tabTriggers = document.querySelectorAll('#mainTab button[data-bs-toggle="tab"]');
+    const tabResults = {}; // Bộ nhớ đệm để lưu kết quả của từng tab
 
-    // Hàm để ẩn và xóa nội dung hộp kết quả
+    // --- XỬ LÝ SỰ KIỆN ---
+
+    // Hàm ẩn và xóa nội dung hộp kết quả
     function hideResultBox() {
         if (resultBox) {
             resultBox.style.display = 'none';
@@ -24,15 +21,10 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    // 3. Gán sự kiện cho mỗi nút tab
+    // Gán sự kiện cho mỗi nút tab để ẩn kết quả cũ khi chuyển tab
     tabTriggers.forEach(triggerEl => {
-        // Lắng nghe sự kiện 'shown.bs.tab' của Bootstrap
         triggerEl.addEventListener('shown.bs.tab', function (event) {
-            // event.target là nút tab vừa được kích hoạt
-            // Lấy ID của pane nội dung tương ứng (ví dụ: 'predict-pane')
             const newTabId = event.target.getAttribute('data-bs-target').substring(1);
-            
-            // Kiểm tra xem có kết quả nào được lưu cho tab này không
             const storedResult = tabResults[newTabId];
 
             if (storedResult) {
@@ -48,15 +40,16 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    // --- XỬ LÝ SỰ KIỆN FORM (Giữ nguyên) ---
+    // Xử lý sự kiện cho form "Dự đoán Trầm cảm"
     if (predictForm) {
         predictForm.addEventListener('submit', function(event) {
             event.preventDefault();
             const data = Object.fromEntries(new FormData(predictForm).entries());
-            handleRequest('/predict', data, 'Đang dự đoán...', displayPredictionResult);
+            handleRequest('/predict', data, 'Đang phân tích, vui lòng chờ...', displayPredictionResult);
         });
     }
 
+    // Xử lý sự kiện cho các form "Tính Chỉ số"
     if (indexForms) {
         indexForms.forEach(form => {
             form.addEventListener('submit', function(event) {
@@ -71,10 +64,25 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
+    // Logic cho các thanh trượt (slider)
+    const sliders = document.querySelectorAll('.slider-input');
+    sliders.forEach(slider => {
+        const valueDisplay = slider.nextElementSibling;
+
+        function updateSliderAppearance() {
+            if (valueDisplay) {
+                valueDisplay.textContent = slider.value;
+            }
+        }
+
+        slider.addEventListener('input', updateSliderAppearance);
+        updateSliderAppearance(); // Gọi lần đầu để đặt giá trị ban đầu
+    });
+
+
     // --- CÁC HÀM TIỆN ÍCH ---
     function handleRequest(url, data, loadingMessage, callback) {
         showLoading(loadingMessage);
-        // Xác định tab nào đang active để lưu kết quả đúng chỗ
         const activeTabPaneId = document.querySelector('.tab-pane.active').id;
 
         fetch(url, {
@@ -82,18 +90,22 @@ document.addEventListener('DOMContentLoaded', function() {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(data),
         })
-        .then(response => response.json())
+        .then(response => {
+            if (!response.ok) {
+                return response.json().then(err => { throw new Error(err.error || 'Lỗi không xác định từ server') });
+            }
+            return response.json();
+        })
         .then(result => {
             if (result.error) {
                 displayError(result.error);
             } else {
-                // Truyền ID của tab active vào hàm callback
                 callback(result, activeTabPaneId);
             }
         })
         .catch(error => {
             console.error('Error:', error);
-            displayError('Có lỗi xảy ra khi kết nối đến máy chủ.');
+            displayError(error.message || 'Có lỗi xảy ra khi kết nối đến máy chủ.');
         });
     }
 
@@ -116,13 +128,16 @@ document.addEventListener('DOMContentLoaded', function() {
 
         if (result.prediction === 1) {
             className = 'result-box alert alert-danger';
-            title = '⚠️ Có dấu hiệu TRẦM CẢM!';
+            title = '⚠️ Mức độ Lo âu / Căng thẳng: CAO';
+            adviceHtml = `<p>Dựa trên các thông tin bạn cung cấp, hệ thống nhận thấy bạn đang có nhiều yếu tố rủi ro có thể ảnh hưởng đến sức khỏe tinh thần.</p>`;
         } else {
             className = 'result-box alert alert-success';
-            title = '✅ Không có dấu hiệu trầm cảm.';
+            title = '✅ Mức độ Lo âu / Căng thẳng: THẤP - TRUNG BÌNH';
+            adviceHtml = `<p>Các chỉ số của bạn cho thấy một trạng thái tinh thần tương đối ổn định. Hãy tiếp tục duy trì nhé!</p>`;
         }
+
         if (result.advice && result.advice.length > 0) {
-            adviceHtml = '<h6>🧾 Gợi ý cải thiện:</h6><ul>';
+            adviceHtml += '<h6>🧾 Gợi ý để cải thiện:</h6><ul>';
             result.advice.forEach(item => { adviceHtml += `<li>${item}</li>`; });
             adviceHtml += '</ul>';
         }
@@ -131,8 +146,8 @@ document.addEventListener('DOMContentLoaded', function() {
         resultTitle.innerHTML = title;
         resultContent.innerHTML = adviceHtml;
 
-        // 4. Lưu kết quả vào bộ nhớ đệm
-        tabResults[tabId] = { className, title, content: adviceHtml };
+        // Lưu kết quả vào bộ nhớ đệm
+        tabResults[tabId] = { className, title, content: resultContent.innerHTML };
     }
 
     function displayIndexResult(result, tabId) {
@@ -142,6 +157,12 @@ document.addEventListener('DOMContentLoaded', function() {
             <p class="mb-2">Kết quả tính toán cho chỉ số:</p>
             <h5 class="text-primary">${result.index_name}</h5>
             <h2><span class="badge bg-primary">${result.score} / 5</span></h2>
+             <hr class="my-3">
+            
+            <div>
+                <strong>Diễn giải:</strong>
+                <p class="fst-italic">${result.interpretation}</p>
+            </div>
             <p class="mt-3 fst-italic">Lưu ý: Điểm càng cao cho thấy mức độ cảm nhận về chỉ số đó càng lớn.</p>
         `;
 
@@ -149,7 +170,11 @@ document.addEventListener('DOMContentLoaded', function() {
         resultTitle.innerHTML = title;
         resultContent.innerHTML = content;
         
-        // 4. Lưu kết quả vào bộ nhớ đệm
-        tabResults[tabId] = { className, title, content };
+        // Lưu kết quả vào bộ nhớ đệm
+        tabResults[tabId] = { 
+            className: 'result-box alert alert-primary', 
+            title: '📊 Kết quả Chỉ số', 
+            content: content 
+        };
     }
 });
