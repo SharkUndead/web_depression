@@ -122,13 +122,16 @@ def predict():
     try:
         user_input = request.json
         df_raw = pd.DataFrame([user_input])
+        support_results = generate_support_resources(user_input)
         df_processed = preprocess_user_data(df_raw.copy(), label_encoders)
         if df_processed.empty: return jsonify({'error': 'Dữ liệu không hợp lệ.'})
-        advice = generate_support_resources(df_processed.iloc[0])
         df_final = df_processed[feature_order]
         prediction = model.predict(df_final)[0]
-        result = {'prediction': int(prediction), 'advice': advice}
-        return jsonify(result)
+        final_result = {
+            'prediction': int(prediction),
+            'support_info': support_results # Gửi dictionary kết quả từ hàm mới
+        }
+        return jsonify(final_result)
     except Exception as e: return jsonify({'error': str(e)}), 400
 
 @app.route('/calculate_index', methods=['POST'])

@@ -12,7 +12,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // --- XỬ LÝ SỰ KIỆN ---
 
-    // Hàm ẩn và xóa nội dung hộp kết quả
     function hideResultBox() {
         if (resultBox) {
             resultBox.style.display = 'none';
@@ -21,26 +20,22 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    // Gán sự kiện cho mỗi nút tab để ẩn kết quả cũ khi chuyển tab
     tabTriggers.forEach(triggerEl => {
         triggerEl.addEventListener('shown.bs.tab', function (event) {
             const newTabId = event.target.getAttribute('data-bs-target').substring(1);
             const storedResult = tabResults[newTabId];
 
             if (storedResult) {
-                // Nếu có, hiển thị lại kết quả đã lưu
                 resultBox.style.display = 'block';
                 resultBox.className = storedResult.className;
                 resultTitle.innerHTML = storedResult.title;
                 resultContent.innerHTML = storedResult.content;
             } else {
-                // Nếu không có, ẩn hộp kết quả đi
                 hideResultBox();
             }
         });
     });
 
-    // Xử lý sự kiện cho form "Dự đoán Trầm cảm"
     if (predictForm) {
         predictForm.addEventListener('submit', function(event) {
             event.preventDefault();
@@ -49,7 +44,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Xử lý sự kiện cho các form "Tính Chỉ số"
     if (indexForms) {
         indexForms.forEach(form => {
             form.addEventListener('submit', function(event) {
@@ -64,21 +58,17 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Logic cho các thanh trượt (slider)
     const sliders = document.querySelectorAll('.slider-input');
     sliders.forEach(slider => {
         const valueDisplay = slider.nextElementSibling;
-
         function updateSliderAppearance() {
             if (valueDisplay) {
                 valueDisplay.textContent = slider.value;
             }
         }
-
         slider.addEventListener('input', updateSliderAppearance);
-        updateSliderAppearance(); // Gọi lần đầu để đặt giá trị ban đầu
+        updateSliderAppearance();
     });
-
 
     // --- CÁC HÀM TIỆN ÍCH ---
     function handleRequest(url, data, loadingMessage, callback) {
@@ -124,30 +114,45 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function displayPredictionResult(result, tabId) {
-        let className, title, adviceHtml = '';
+        let className, title, content = '';
+
+        // Hiển thị disclaimer trước tiên
+        if (result.support_info && result.support_info.disclaimer) {
+            content += `<p class="fst-italic small text-secondary">${result.support_info.disclaimer}</p><hr>`;
+        }
 
         if (result.prediction === 1) {
             className = 'result-box alert alert-danger';
             title = '⚠️ Mức độ Lo âu / Căng thẳng: CAO';
-            adviceHtml = `<p>Dựa trên các thông tin bạn cung cấp, hệ thống nhận thấy bạn đang có nhiều yếu tố rủi ro có thể ảnh hưởng đến sức khỏe tinh thần.</p>`;
         } else {
             className = 'result-box alert alert-success';
             title = '✅ Mức độ Lo âu / Căng thẳng: THẤP - TRUNG BÌNH';
-            adviceHtml = `<p>Các chỉ số của bạn cho thấy một trạng thái tinh thần tương đối ổn định. Hãy tiếp tục duy trì nhé!</p>`;
         }
-
-        if (result.advice && result.advice.length > 0) {
-            adviceHtml += '<h6>🧾 Gợi ý để cải thiện:</h6><ul>';
-            result.advice.forEach(item => { adviceHtml += `<li>${item}</li>`; });
-            adviceHtml += '</ul>';
+        
+        // Hiển thị các cảnh báo và nhận định từ cấu trúc mới
+        if (result.support_info) {
+            if (result.support_info.critical_alerts && result.support_info.critical_alerts.length > 0) {
+                content += `<h6>❗ Cảnh báo Quan trọng:</h6><p>${result.support_info.critical_alerts.join('<br>')}</p>`;
+            }
+            if (result.support_info.observations && result.support_info.observations.length > 0) {
+                content += '<h6>💡 Nhận định từ hệ thống:</h6><ul>';
+                result.support_info.observations.forEach(item => { content += `<li>${item}</li>`; });
+                content += '</ul>';
+            }
+            if (result.support_info.resource_categories && result.support_info.resource_categories.length > 0) {
+                content += '<h6>🧾 Gợi ý và Nguồn lực:</h6>';
+                result.support_info.resource_categories.forEach(cat => { 
+                    content += `<p><strong>- ${cat.title}:</strong> ${cat.content}</p>`; 
+                });
+            }
         }
         
         resultBox.className = className;
         resultTitle.innerHTML = title;
-        resultContent.innerHTML = adviceHtml;
+        resultContent.innerHTML = content;
 
         // Lưu kết quả vào bộ nhớ đệm
-        tabResults[tabId] = { className, title, content: resultContent.innerHTML };
+        tabResults[tabId] = { className, title, content };
     }
 
     function displayIndexResult(result, tabId) {
@@ -157,13 +162,12 @@ document.addEventListener('DOMContentLoaded', function() {
             <p class="mb-2">Kết quả tính toán cho chỉ số:</p>
             <h5 class="text-primary">${result.index_name}</h5>
             <h2><span class="badge bg-primary">${result.score} / 5</span></h2>
-             <hr class="my-3">
-            
+            <hr class="my-3">
             <div>
                 <strong>Diễn giải:</strong>
                 <p class="fst-italic">${result.interpretation}</p>
             </div>
-            <p class="mt-3 fst-italic">Lưu ý: Điểm càng cao cho thấy mức độ cảm nhận về chỉ số đó càng lớn.</p>
+            <p class="mt-3 fst-italic small">Lưu ý: Điểm càng cao cho thấy mức độ cảm nhận về chỉ số đó càng lớn.</p>
         `;
 
         resultBox.className = className;
@@ -171,10 +175,6 @@ document.addEventListener('DOMContentLoaded', function() {
         resultContent.innerHTML = content;
         
         // Lưu kết quả vào bộ nhớ đệm
-        tabResults[tabId] = { 
-            className: 'result-box alert alert-primary', 
-            title: '📊 Kết quả Chỉ số', 
-            content: content 
-        };
+        tabResults[tabId] = { className, title, content };
     }
 });
