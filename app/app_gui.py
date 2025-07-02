@@ -22,7 +22,7 @@ try:
     sys.path.insert(0, PROJECT_ROOT)
 
     from utils.preprocessing import preprocess_user_data
-    from utils.advice_engine import generate_support_resources
+    from utils.advice_gui import generate_support_gui
     from utils.file_predictor import predict_from_file as predict_file
     from utils.localization import FIELD_LABELS, YES_NO_OPTIONS, GENDER_OPTIONS
 except ImportError as e:
@@ -90,9 +90,9 @@ class DepressionApp(tk.Tk):
             base_dir = getattr(sys, '_MEIPASS', PROJECT_ROOT)
             return {
                 "base_dir": base_dir,
-                "model": joblib.load(os.path.join(base_dir, 'models', 'lgbm_model.pkl')),
+                "model": joblib.load(os.path.join(base_dir, 'models', 'stacking_model.pkl')),
                 "label_encoders": joblib.load(os.path.join(base_dir, 'models', 'label_encoders.pkl')),
-                "feature_order": joblib.load(os.path.join(base_dir, 'models', 'feature_order_lightgbm.pkl'))
+                "feature_order": joblib.load(os.path.join(base_dir, 'models', 'feature_stacking.pkl'))
             }
         except FileNotFoundError as e:
             messagebox.showerror("Lỗi nghiêm trọng", f"Không tìm thấy file mô hình cần thiết: {e.filename}")
@@ -257,9 +257,9 @@ class DepressionApp(tk.Tk):
                 os.makedirs(output_dir)
             
             result_msg = predict_file(path, output_name,
-                os.path.join(self.resources["base_dir"], 'models', 'lgbm_model.pkl'), 
+                os.path.join(self.resources["base_dir"], 'models', 'stacking_model.pkl'), 
                 os.path.join(self.resources["base_dir"], 'models', 'label_encoders.pkl'), 
-                os.path.join(self.resources["base_dir"], 'models', 'feature_order_lightgbm.pkl'), 
+                os.path.join(self.resources["base_dir"], 'models', 'feature_stacking.pkl'), 
                 output_dir)
             color = "green" if "✅" in result_msg else "red"
             self.file_result_label.config(text=result_msg, foreground=color)
@@ -287,7 +287,7 @@ class DepressionApp(tk.Tk):
             
             df_raw = pd.DataFrame([user_input])
             
-            support_results = generate_support_resources(user_input)
+            support_results = generate_support_gui(user_input)
             
             df_processed = preprocess_user_data(df_raw.copy(), self.resources["label_encoders"])
             if df_processed.empty:
@@ -300,14 +300,14 @@ class DepressionApp(tk.Tk):
             self.result_text.config(state="normal")
             self.result_text.delete("1.0", tk.END)
             
-            self.result_text.insert(tk.END, support_results.get("disclaimer", "") + "\n\n", "disclaimer")
+            self.result_text.insert(tk.END, support_results.get("disclaimer", "") + "\n", "disclaimer")
 
             if prediction == 1:
                 title = '⚠️ Mức độ Lo âu / Căng thẳng: CAO'
             else:
                 title = '✅ Mức độ Lo âu / Căng thẳng: THẤP - TRUNG BÌNH'
             
-            self.result_text.insert(tk.END, title + "\n\n", "title_red" if prediction == 1 else "title_green")
+            self.result_text.insert(tk.END, title + "\n", "title_red" if prediction == 1 else "title_green")
 
             if support_results.get("critical_alerts"):
                 self.result_text.insert(tk.END, "❗ Cảnh báo Quan trọng:\n", "subtitle")
@@ -317,7 +317,6 @@ class DepressionApp(tk.Tk):
                 self.result_text.insert(tk.END, "💡 Nhận định từ hệ thống:\n", "subtitle")
                 for obs in support_results.get("observations", []):
                     self.result_text.insert(tk.END, f"  • {obs}\n")
-                self.result_text.insert(tk.END, "\n")
 
             if support_results.get("resource_categories"):
                 self.result_text.insert(tk.END, "🧾 Gợi ý và Nguồn lực:\n", "subtitle")

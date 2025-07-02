@@ -39,7 +39,7 @@ def generate_support_resources(user_input):
                 "<i>(Lưu ý: Vui lòng kiểm tra lại số điện thoại và giờ hoạt động trước khi gọi.)</i>"
             )
         })
-
+    
     # THAY ĐỔI 3: Chuyển từ "lời khuyên" sang "thông tin & hướng tiếp cận"
     if academic_pressure >= 4:
         results["resource_categories"].append({

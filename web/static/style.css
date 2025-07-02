@@ -9,6 +9,7 @@
     --text-color: #212529;
     --text-secondary-color: #6c757d;
     --border-color: #e2e8f0;
+    --danger-color: #dc3545;
 }
 
 /* ---- THIẾT LẬP NỀN BẰNG HÌNH ẢNH ---- */
@@ -16,14 +17,12 @@ body {
     font-family: 'Be Vietnam Pro', sans-serif;
     color: var(--text-color);
     line-height: 1.6;
-
-    /* --- SỬA LẠI ĐƯỜNG DẪN ẢNH NỀN Ở ĐÂY --- */
     background-image: url('/static/img/back_ground.jpg'); 
     background-size: cover;
     background-position: center center;
     background-repeat: no-repeat;
     background-attachment: fixed;
-    background-color: var(--background-color); /* Màu nền dự phòng nếu ảnh không tải được */
+    background-color: var(--background-color);
 }
 
 /* ---- KHUNG CHỨA CHÍNH ---- */
@@ -33,9 +32,8 @@ body {
     padding-bottom: 3rem;
 }
 
-/* KHÔI PHỤC HIỆU ỨNG KÍNH MỜ */
 .main-content-wrapper {
-    background-color: rgba(255, 255, 255, 0.95); /* Nền trắng trong suốt 95% */
+    background-color: rgba(255, 255, 255, 0.95);
     border-radius: 16px;
     border: 1px solid rgba(255, 255, 255, 0.3);
     box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
@@ -44,9 +42,9 @@ body {
     backdrop-filter: blur(5px);
 }
 
-/* (Các phần CSS còn lại không thay đổi) */
 h2 { font-size: 4rem; font-weight: 600; color: #ceac33; display: inline-block; border-radius: 4px; padding: 15px 30px; font-family: "Alex Brush", cursive; font-style: normal;text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7);}
-.lead { font-size: 1.8rem; font-weight: 400; color: var(--text-secondary-color); }
+.title-second { color: #ffffff;font-weight: 580; font-size: 1.9rem; margin-top: 10px; text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7);font-family: "Alex Brush", cursive; font-style: normal; }
+
 .nav-tabs { display: flex; flex-wrap: nowrap; overflow-x: auto; padding-bottom: 2px; border-bottom: 2px solid var(--border-color); scrollbar-width: thin; scrollbar-color: #ccc transparent; }
 .nav-tabs::-webkit-scrollbar { height: 4px; }
 .nav-tabs::-webkit-scrollbar-thumb { background: #ccc; border-radius: 10px; }
@@ -55,16 +53,40 @@ h2 { font-size: 4rem; font-weight: 600; color: #ceac33; display: inline-block; b
 .nav-tabs .nav-link.active, .nav-tabs .nav-item.show .nav-link { color: var(--primary-color); border-bottom-color: var(--primary-color); background-color: transparent; }
 .nav-tabs .nav-link:hover:not(.active) { color: var(--primary-color); background-color: #e9ecef; }
 .tab-content { padding: 2rem; }
+
 .form-label { font-size: 0.9rem; font-weight: 600; color: #495057; }
 .form-control, .form-select { border-radius: 8px; padding: 0.6rem 1rem; font-size: 0.95rem; background-color: #f8f9fa; border: 1px solid #ced4da; }
-.form-control:focus, .form-select:focus { border-color: var(--primary-color); box-shadow: 0 0 0 3px rgba(0, 150, 136, 0.15); background-color: #fff; }
+.form-control:focus, .form-select:focus { border-color: var(--primary-color); box-shadow: 0 0 0 3px rgba(102, 172, 195, 0.25); background-color: #fff; }
+
+/* Định dạng chung cho các trường bị lỗi */
+.form-control.is-invalid, .form-select.is-invalid { 
+    border-color: var(--danger-color);
+    padding-right: calc(1.5em + .75rem);
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12' width='12' height='12' fill='none' stroke='%23dc3545'%3e%3ccircle cx='6' cy='6' r='4.5'/%3e%3cpath stroke-linejoin='round' d='M5.8 3.6h.4L6 6.5z'/%3e%3ccircle cx='6' cy='8.2' r='.6' fill='%23dc3545' stroke='none'/%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right calc(.375em + .1875rem) center;
+    background-size: calc(.75em + .375rem) calc(.75em + .375rem);
+}
 .form-control::placeholder { color: #999; opacity: 1; }
-.form-select option { background: #ffffff; color: #212529; }
+
 .radio-group { display: flex; flex-wrap: wrap; gap: 0.8rem; margin-top: 0.75rem; }
-.radio-group .form-check-input { display: none; }
+
+/* Cách ẩn nút radio đúng cách, không dùng display:none */
+.radio-group .form-check-input {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    height: 0;
+    width: 0;
+}
 .radio-group .form-check-label { padding: 0.6rem 1.25rem; border-radius: 30px; cursor: pointer; transition: all 0.3s ease; border: 1px solid var(--border-color); color: var(--text-secondary-color); }
 .radio-group .form-check-label:hover { background-color: #e9ecef; border-color: #adb5bd; color: #343a40; }
 .radio-group .form-check-input:checked + .form-check-label { background-color: var(--primary-color); color: #ffffff; border-color: var(--primary-color); }
+
+/* CSS để hiện lỗi cho nhóm radio */
+.radio-group.is-invalid + .invalid-feedback {
+    display: block;
+    width: 100%;
+}
 .btn-primary { background-color: var(--primary-color); border-color: var(--primary-color); }
 .btn-primary:hover { background-color: #a6d7e8; border-color: #d6faf5; }
-.title-second{color: #ffffff;font-weight: 580; font-size: 1.9rem; margin-top: 10px; text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7);font-family: "Alex Brush", cursive; font-style: normal;}

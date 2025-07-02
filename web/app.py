@@ -23,9 +23,9 @@ app = Flask(__name__, template_folder='templates', static_folder='static')
 # --- Tải mô hình và các tài nguyên một lần khi ứng dụng khởi động ---
 try:
     BASE_DIR = project_root
-    MODEL_PATH = os.path.join(BASE_DIR, 'models', 'lgbm_model.pkl')
+    MODEL_PATH = os.path.join(BASE_DIR, 'models', 'stacking_model.pkl')
     ENCODER_PATH = os.path.join(BASE_DIR, 'models', 'label_encoders.pkl')
-    FEATURE_ORDER_PATH = os.path.join(BASE_DIR, 'models', 'feature_order_lightgbm.pkl')
+    FEATURE_ORDER_PATH = os.path.join(BASE_DIR, 'models', 'feature_stacking.pkl')
 
     model = joblib.load(MODEL_PATH)
     label_encoders = joblib.load(ENCODER_PATH)
@@ -44,7 +44,7 @@ FIELD_PLACEHOLDERS = {
 INDEX_QUESTIONS = {
     "pressure": {
         "title": "Áp lực học tập",
-        "description": "Với mỗi phát biểu dưới đây, hãy kéo thanh trượt để thể hiện mức độ bạn cảm nhận về nó trong 1 tháng qua (1: Hoàn toàn không đúng, 100: Hoàn toàn đúng).",
+        "description": "Với mỗi phát biểu dưới đây, hãy kéo thanh trượt để thể hiện mức độ bạn cảm nhận về áp lực học tập trong 2 tuần qua (1: Hoàn toàn không đúng, 100: Hoàn toàn đúng).",
         "questions": [
             "Tôi cảm thấy khối lượng bài tập, bài đọc và các dự án là quá sức đối với tôi.",
             "Tôi thường xuyên có cảm giác không bao giờ có đủ thời gian để hoàn thành tất cả các yêu cầu của việc học.",
@@ -55,7 +55,7 @@ INDEX_QUESTIONS = {
     },
     "satisfaction": {
         "title": "Mức độ hài lòng với việc học",
-        "description": "Với mỗi phát biểu dưới đây, hãy kéo thanh trượt để thể hiện mức độ bạn đồng ý (1: Hoàn toàn không đồng ý, 100: Hoàn toàn đồng ý).",
+        "description": "Với mỗi phát biểu dưới đây, hãy kéo thanh trượt để thể hiện mức độ bạn cảm nhận về độ hài lòng với việc học trong 2 tuần qua(1: Hoàn toàn không đồng ý, 100: Hoàn toàn đồng ý).",
         "questions": [
             "Các môn học tôi đang theo học thật sự thử thách cách suy nghĩ của tôi và khiến tôi cảm thấy hứng thú.",
             "Tôi cảm thấy mình có thể trao đổi và nhận được sự hỗ trợ cần thiết từ giảng viên.",
@@ -66,7 +66,7 @@ INDEX_QUESTIONS = {
     },
     "financial_pressure": {
         "title": "Áp lực tài chính",
-        "description": "Với mỗi phát biểu dưới đây, hãy kéo thanh trượt để thể hiện mức độ bạn cảm nhận về tài chính cá nhân (1: Hoàn toàn không đúng, 100: Hoàn toàn đúng).",
+        "description": "Với mỗi phát biểu dưới đây, hãy kéo thanh trượt để thể hiện mức độ bạn cảm nhận về tài chính trong 2 tuần qua (1: Hoàn toàn không đúng, 100: Hoàn toàn đúng).",
         "questions": [
             "Việc chi trả cho các nhu cầu cơ bản hàng tháng (như nhà ở, ăn uống, đi lại) là một gánh nặng tài chính đối với tôi.",
             "Tôi thường xuyên cảm thấy căng thẳng về các khoản nợ hoặc các nghĩa vụ tài chính mà tôi đang có.",

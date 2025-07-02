@@ -32,10 +32,9 @@
             <div class="tab-content" id="mainTabContent">
                 
                 <div class="tab-pane fade show active p-4" id="predict-pane" role="tabpanel">
-                    <form id="predict-form">
-                         <div class="row g-4">
+                    <form id="predict-form" novalidate> <div class="row g-4">
                             {% for field in ['age', 'city', 'degree', 'sleep_duration', 'dietary_habits', 'work/study_hours', 'academic_pressure', 'study_satisfaction', 'financial_stress', 'cgpa'] %}
-                             <div class="col-md-6">
+                            <div class="col-md-6">
                                 <label for="{{ field }}" class="form-label">{{ field_labels.get(field, field) }}</label>
                                 {% if field in form_options %}
                                 <select class="form-select" id="{{ field }}" name="{{ field }}" required>
@@ -44,12 +43,18 @@
                                     <option value="{{ option }}">{{ option }}</option>
                                     {% endfor %}
                                 </select>
+                                <div class="invalid-feedback">Vui lòng chọn một tùy chọn.</div>
                                 {% else %}
                                     {% set placeholder_text = field_placeholders.get(field, '') %}
                                     {% if field == 'cgpa' %}
-                                        <input type="number" step="0.1" min="0" max="10" class="form-control" id="{{ field }}" name="{{ field }}" placeholder="{{ placeholder_text }}" required>
+                                    <input type="number" step="0.1" min="0" max="10" class="form-control" id="{{ field }}" name="{{ field }}" placeholder="{{ placeholder_text }}" required>
+                                    <div class="invalid-feedback">Vui lòng nhập điểm hợp lệ.</div>
+                                    {% elif field == 'age' %}
+                                    <input type="number" step="1" class="form-control" id="age_input" name="age" placeholder="{{ placeholder_text }}" required>
+                                    <div id="age-feedback" class="invalid-feedback"></div>
                                     {% else %}
-                                        <input type="number" step="1" min="0" class="form-control" id="{{ field }}" name="{{ field }}" placeholder="{{ placeholder_text }}" required>
+                                    <input type="number" step="1" min="0" class="form-control" id="{{ field }}" name="{{ field }}" placeholder="{{ placeholder_text }}" required>
+                                    <div class="invalid-feedback">Vui lòng nhập một giá trị.</div>
                                     {% endif %}
                                 {% endif %}
                             </div>
@@ -57,7 +62,7 @@
                             
                             <div class="col-12 mt-4">
                                 <label class="form-label">{{ field_labels.get('gender') }}</label>
-                                <div class="radio-group">
+                                <div class="radio-group required-radio">
                                     {% for text, val in gender_options %}
                                     <div class="form-check">
                                         <input class="form-check-input" type="radio" name="gender" id="gender_{{ val }}" value="{{ val }}" required>
@@ -65,11 +70,12 @@
                                     </div>
                                     {% endfor %}
                                 </div>
+                                <div class="invalid-feedback">Vui lòng chọn giới tính của bạn.</div>
                             </div>
                             {% for field in ['have_you_ever_had_suicidal_thoughts_?', 'family_history_of_mental_illness'] %}
                             <div class="col-12 mt-3">
                                 <label class="form-label">{{ field_labels.get(field) }}</label>
-                                <div class="radio-group">
+                                <div class="radio-group required-radio">
                                     {% for text, val in yes_no_options %}
                                     <div class="form-check">
                                         <input class="form-check-input" type="radio" name="{{ field }}" id="{{ field }}_{{ val }}" value="{{ val }}" required>
@@ -77,11 +83,12 @@
                                     </div>
                                     {% endfor %}
                                 </div>
+                                <div class="invalid-feedback">Vui lòng trả lời câu hỏi này.</div>
                             </div>
                             {% endfor %}
                         </div>
                         <hr class="my-4" style="border-color: var(--border-color);">
-                        <button class="w-100 btn btn-primary btn-lg" type="submit">👉 Dự đoán</button>
+                        <button id="predict-button" class="w-100 btn btn-primary btn-lg" type="submit">👉 Dự đoán</button>
                     </form>
                 </div>
 
@@ -109,7 +116,7 @@
             </div>
         </div>
         
-        <div id="result-box" class="result-box">
+        <div id="result-box" class="result-box" style="display: none;">
             <h4 id="result-title"></h4>
             <div id="result-content"></div>
         </div>
